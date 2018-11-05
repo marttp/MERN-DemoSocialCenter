@@ -1,30 +1,34 @@
 import React, { Component } from 'react'
 import './App.css'
 
-import { AppNavbar, JumbotronApp, AppInput } from './components'
+import { AppNavbar, JumbotronApp, Footer } from './components'
+import { fetchAllPost } from './services/postApi'
+import Posts from './containers/Posts/Posts'
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
       textTest: '',
+      posts: null,
     }
   }
 
-  handleOnChange = event => {
-    // this.setState({ textTest: event.target.value }, () =>
-    //   console.log(this.state.textTest)
-    // )
-    const { value } = event.target
-    this.setState(
-      prevState => {
-        return {
-          ...prevState,
-          textTest: value,
-        }
-      },
-      () => console.log(this.state.textTest)
-    )
+  componentDidMount() {
+    fetchAllPost()
+      .then(result => {
+        this.setState(
+          prevState => {
+            return {
+              posts: result,
+            }
+          }
+          // () => console.log(this.state.posts)
+        )
+      })
+      .catch(err => {
+        console.warn(err)
+      })
   }
 
   render() {
@@ -32,14 +36,8 @@ class App extends Component {
       <React.Fragment>
         <AppNavbar />
         <JumbotronApp />
-        <AppInput
-          label
-          title="test 2 way binding"
-          type="text"
-          onChange={this.handleOnChange}
-          placeholder="Input word for test 2 way binding"
-        />
-        <p>{this.state.textTest}</p>
+        <Posts data={this.state.posts} />
+        <Footer />
       </React.Fragment>
     )
   }
