@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Collapse, Navbar, NavbarToggler, Nav } from 'reactstrap'
+import { Link } from 'react-router-dom'
 
 import './AppNavbar.css'
 import NavAppItem from './NavAppItem/NavAppItem'
@@ -10,17 +11,19 @@ const AppNavbar = props => {
     <React.Fragment>
       <Navbar className="AppNavbar" light expand="md">
         <div className="logo-container">
-          <img
-            className="logo"
-            alt="logo of website"
-            src={require('../../assets/pc-computer-with-monitor.png')}
-          />
+          <Link to="/">
+            <img
+              className="logo"
+              alt="logo of website"
+              src={require('../../assets/pc-computer-with-monitor.png')}
+            />
+          </Link>
         </div>
-        <NavbarToggler />
-        <Collapse navbar isOpen={true}>
+        <NavbarToggler onClick={event => props.handlerCollapsed(event)} />
+        <Collapse navbar isOpen={props.isCollapsedOpen}>
           <Nav className="ml-auto" navbar>
             <NavAppItem link="/" itemTitle="Home" />
-            <NavAppItem link="/" itemTitle="My Profile" />
+            <NavAppItem link="/profile" itemTitle="My Profile" />
           </Nav>
         </Collapse>
       </Navbar>

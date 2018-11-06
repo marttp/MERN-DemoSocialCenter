@@ -1,16 +1,44 @@
 import React, { Component } from 'react'
 import './App.css'
 
-import { AppNavbar, JumbotronApp, Footer } from './components'
+import uuidv1 from 'uuid/v1'
+
 import { fetchAllPost } from './services/postApi'
-import Posts from './containers/Posts/Posts'
+import { Layout, Home, MyProfile, PageNotFound } from './containers'
+
+import { Route, Switch } from 'react-router-dom'
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      textTest: '',
+      isCollapse: false,
       posts: null,
+      myPosts: {
+        name: '',
+        isOnSetName: true,
+        postText: '',
+        posts: [
+          // {
+          //   userId: 1,
+          //   id: 8,
+          //   name: 'TestUser',
+          //   body: 'Test1',
+          // },
+          // {
+          //   userId: 1,
+          //   id: 9,
+          //   name: 'TestUser',
+          //   body: 'Test2',
+          // },
+          // {
+          //   userId: 1,
+          //   id: 10,
+          //   name: 'TestUser',
+          //   body: 'Test3',
+          // },
+        ],
+      },
     }
   }
 
@@ -31,13 +59,114 @@ class App extends Component {
       })
   }
 
+  handlerCollapseOpen = event => {
+    event.preventDefault()
+    this.setState({ isCollapse: !this.state.isCollapse })
+  }
+
+  handlerNameChanged = event => {
+    const { value } = event.target
+    this.setState(
+      prevState => {
+        return {
+          myPosts: {
+            ...prevState.myPosts,
+            name: value,
+          },
+        }
+      },
+      () => console.log(this.state.myPosts)
+    )
+  }
+
+  handlerPostChanged = (event, type = 'change') => {
+    if (type === 'reset') {
+      event.preventDefault()
+    }
+
+    const { value } = event.target
+    this.setState(prevState => {
+      return {
+        myPosts: {
+          ...prevState.myPosts,
+          postText: type === 'reset' ? '' : value,
+        },
+      }
+    })
+  }
+
+  handlerInsertName = event => {
+    event.preventDefault()
+
+    if (this.state.myPosts.name.length < 1) {
+      return
+    }
+
+    this.setState(prevState => {
+      return {
+        myPosts: {
+          ...prevState.myPosts,
+          isOnSetName: !prevState.myPosts.isOnSetName,
+        },
+      }
+    })
+  }
+
+  handlerOnPost = event => {
+    event.preventDefault()
+    this.setState(prevState => {
+      return {
+        myPosts: {
+          ...prevState.myPosts,
+          posts: [
+            ...prevState.myPosts.posts,
+            {
+              id: uuidv1(),
+              name: prevState.myPosts.name,
+              body: prevState.myPosts.postText,
+              timeStamp: new Date(),
+            },
+          ],
+          postText: '',
+        },
+      }
+    })
+  }
+
   render() {
     return (
       <React.Fragment>
-        <AppNavbar />
-        <JumbotronApp />
-        <Posts data={this.state.posts} />
-        <Footer />
+        <Layout
+          isCollapsedOpen={this.state.isCollapse}
+          changeCollapsed={this.handlerCollapseOpen}
+        >
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={route => {
+                return <Home data={this.state.posts} />
+              }}
+            />
+            {/* <Route exact path="/profile" component={MyProfile} /> */}
+            <Route
+              exact
+              path="/profile"
+              render={route => {
+                return (
+                  <MyProfile
+                    onPost={this.handlerOnPost}
+                    onInsertName={this.handlerInsertName}
+                    onChangeName={this.handlerNameChanged}
+                    onChangeTextPost={this.handlerPostChanged}
+                    myPost={this.state.myPosts}
+                  />
+                )
+              }}
+            />
+            <Route component={PageNotFound} />
+          </Switch>
+        </Layout>
       </React.Fragment>
     )
   }
