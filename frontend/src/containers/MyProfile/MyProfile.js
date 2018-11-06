@@ -12,6 +12,7 @@ const MyProfile = props => {
         onChangeTextPost={props.onChangeTextPost}
         isOnSetName={props.myPost.isOnSetName}
         postText={props.myPost.postText}
+        postName={props.myPost.name}
       />
       <MyPosts data={props.myPost.posts} />
     </div>

@@ -24,6 +24,7 @@ const NewPost = props => {
           <InputGroup className="insert-name">
             <Input
               type="text"
+              value={props.postName}
               onChange={event => props.onChangeName(event)}
               disabled={!props.isOnSetName}
             />
