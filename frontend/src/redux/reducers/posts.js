@@ -2,7 +2,7 @@ import * as actionTypes from '../actionTypes'
 
 const initialState = {
   isLoading: false,
-  isChangeName: true,
+  isOnSetName: true,
   name: '',
   homePost: [],
   myPosts: [],
@@ -32,7 +32,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.TOGGLE_CHANGE_NAME:
       return {
         ...state,
-        isChangeName: !state.isChangeName,
+        isOnSetName: !state.isOnSetName,
       }
 
     case actionTypes.FETCH_HOME_POST:

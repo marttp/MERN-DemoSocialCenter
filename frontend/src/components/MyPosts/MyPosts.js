@@ -1,18 +1,47 @@
-import React from 'react'
+import React, { Component } from 'react'
 import MyPost from './MyPost/MyPost'
 
-const MyPosts = props => {
-  const { data } = props
+import { connect } from 'react-redux'
+import * as actionCreator from '../../redux/actions'
 
-  let myPosts = null
-
-  if (data.length > 0) {
-    myPosts = data.map(post => (
-      <MyPost key={post.id} data={post} onDeletePost={props.onDeletePost} />
-    ))
+class MyPosts extends Component {
+  handlerOnDeletePost = (event, id) => {
+    event.preventDefault()
+    this.props.onDeletePost(id)
   }
 
-  return <React.Fragment>{myPosts}</React.Fragment>
+  render() {
+    const data = [...this.props.myPosts]
+    let myPosts = null
+    if (data.length > 0) {
+      myPosts = data.map(post => (
+        <MyPost
+          key={post.id}
+          data={post}
+          onDeletePost={this.handlerOnDeletePost}
+        />
+      ))
+    }
+
+    return <React.Fragment>{myPosts}</React.Fragment>
+  }
 }
 
-export default MyPosts
+const mapStateToProps = state => {
+  return {
+    myPosts: state.posts.myPosts,
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onDeletePost: id => {
+      dispatch(actionCreator.deletePost(id))
+    },
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MyPosts)
