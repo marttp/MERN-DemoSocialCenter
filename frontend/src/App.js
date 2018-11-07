@@ -3,60 +3,25 @@ import './App.css'
 
 import uuidv1 from 'uuid/v1'
 
-import { fetchAllPost } from './services/postApi'
 import { Layout, Home, MyProfile, PageNotFound } from './containers'
 
 import { Route, Switch } from 'react-router-dom'
+
+import { connect } from 'react-redux'
+import * as actionCreator from './redux/actions'
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
       isCollapse: false,
-      posts: null,
-      myPosts: {
-        name: '',
-        isOnSetName: true,
-        postText: '',
-        posts: [
-          // {
-          //   userId: 1,
-          //   id: 8,
-          //   name: 'TestUser',
-          //   body: 'Test1',
-          // },
-          // {
-          //   userId: 1,
-          //   id: 9,
-          //   name: 'TestUser',
-          //   body: 'Test2',
-          // },
-          // {
-          //   userId: 1,
-          //   id: 10,
-          //   name: 'TestUser',
-          //   body: 'Test3',
-          // },
-        ],
-      },
+      name: '',
+      postText: '',
     }
   }
 
   componentDidMount() {
-    fetchAllPost()
-      .then(result => {
-        this.setState(
-          prevState => {
-            return {
-              posts: result,
-            }
-          }
-          // () => console.log(this.state.posts)
-        )
-      })
-      .catch(err => {
-        console.warn(err)
-      })
+    this.props.fetchHomePost()
   }
 
   handlerCollapseOpen = event => {
@@ -68,10 +33,7 @@ class App extends Component {
     const { value } = event.target
     this.setState(prevState => {
       return {
-        myPosts: {
-          ...prevState.myPosts,
-          name: value,
-        },
+        name: value,
       }
     })
   }
@@ -84,10 +46,7 @@ class App extends Component {
     const { value } = event.target
     this.setState(prevState => {
       return {
-        myPosts: {
-          ...prevState.myPosts,
-          postText: type === 'reset' ? '' : value,
-        },
+        postText: type === 'reset' ? '' : value,
       }
     })
   }
@@ -95,7 +54,7 @@ class App extends Component {
   handlerInsertName = event => {
     event.preventDefault()
 
-    if (this.state.myPosts.name.length < 1) {
+    if (this.state.name.length < 1) {
       return
     }
 
@@ -111,36 +70,19 @@ class App extends Component {
 
   handlerOnPost = event => {
     event.preventDefault()
-    this.setState(prevState => {
-      return {
-        myPosts: {
-          ...prevState.myPosts,
-          posts: [
-            ...prevState.myPosts.posts,
-            {
-              id: uuidv1(),
-              name: prevState.myPosts.name,
-              body: prevState.myPosts.postText,
-              timeStamp: new Date(),
-            },
-          ],
-          postText: '',
-        },
-      }
-    })
+    const newPost = {
+      id: uuidv1(),
+      name: this.state.myPosts.name,
+      body: this.state.myPosts.postText,
+      timeStamp: new Date(),
+    }
+    this.props.onAddPost(newPost)
+    this.setState({ postText: '' })
   }
 
   handlerOnDeletePost = (event, id) => {
     event.preventDefault()
-    const newPosts = this.state.myPosts.posts.filter(post => post.id !== id)
-    this.setState(prevState => {
-      return {
-        myPosts: {
-          ...prevState.myPosts,
-          posts: newPosts,
-        },
-      }
-    })
+    this.props.onDeletePost(id)
   }
 
   render() {
@@ -155,7 +97,7 @@ class App extends Component {
               exact
               path="/"
               render={route => {
-                return <Home data={this.state.posts} />
+                return <Home data={this.props.homePosts} />
               }}
             />
             {/* <Route exact path="/profile" component={MyProfile} /> */}
@@ -183,4 +125,33 @@ class App extends Component {
   }
 }
 
-export default App
+const mapStateToProps = state => {
+  return {
+    homePosts: state.posts.homePost,
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onAddPost: newPost => {
+      dispatch(actionCreator.addPost(newPost))
+    },
+    onDeletePost: id => {
+      dispatch(actionCreator.deletePost(id))
+    },
+    onInsertName: name => {
+      dispatch(actionCreator.insertName(name))
+    },
+    toggleChangeName: () => {
+      dispatch(actionCreator.toggleChangeName())
+    },
+    fetchHomePost: () => {
+      dispatch(actionCreator.fetchHomePost())
+    },
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
