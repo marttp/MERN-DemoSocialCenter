@@ -14,7 +14,7 @@ const MyProfile = props => {
         postText={props.myPost.postText}
         postName={props.myPost.name}
       />
-      <MyPosts data={props.myPost.posts} />
+      <MyPosts data={props.myPost.posts} onDeletePost={props.onDeletePost} />
     </div>
   )
 }

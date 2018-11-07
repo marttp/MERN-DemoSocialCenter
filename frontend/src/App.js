@@ -66,17 +66,14 @@ class App extends Component {
 
   handlerNameChanged = event => {
     const { value } = event.target
-    this.setState(
-      prevState => {
-        return {
-          myPosts: {
-            ...prevState.myPosts,
-            name: value,
-          },
-        }
-      },
-      () => console.log(this.state.myPosts)
-    )
+    this.setState(prevState => {
+      return {
+        myPosts: {
+          ...prevState.myPosts,
+          name: value,
+        },
+      }
+    })
   }
 
   handlerPostChanged = (event, type = 'change') => {
@@ -133,6 +130,19 @@ class App extends Component {
     })
   }
 
+  handlerOnDeletePost = (event, id) => {
+    event.preventDefault()
+    const newPosts = this.state.myPosts.posts.filter(post => post.id !== id)
+    this.setState(prevState => {
+      return {
+        myPosts: {
+          ...prevState.myPosts,
+          posts: newPosts,
+        },
+      }
+    })
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -159,6 +169,7 @@ class App extends Component {
                     onInsertName={this.handlerInsertName}
                     onChangeName={this.handlerNameChanged}
                     onChangeTextPost={this.handlerPostChanged}
+                    onDeletePost={this.handlerOnDeletePost}
                     myPost={this.state.myPosts}
                   />
                 )

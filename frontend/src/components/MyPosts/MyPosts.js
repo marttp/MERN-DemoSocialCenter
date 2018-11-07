@@ -8,7 +8,7 @@ const MyPosts = props => {
 
   if (data.length > 0) {
     myPosts = data.map(post => (
-      <MyPost key={post.id} name={post.name} body={post.body} />
+      <MyPost key={post.id} data={post} onDeletePost={props.onDeletePost} />
     ))
   }
 
