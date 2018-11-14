@@ -44,7 +44,11 @@ exports.createPost = (req, res, next) => {
         newPost.save().then((post) => {
             resolve(post)
         }).catch((err) => {
-            reject(err)
+            reject({ 
+                status: 500, 
+                success: false,
+                message:'Internal server error' 
+            })
         });
     })
 }
@@ -53,13 +57,29 @@ exports.deletePostById = (req, res, next) => {
     return new Promise((resolve, reject) => {
         const id = req.params.postId
         Post.findById(id).then((post) => {
-            post.remove().then(() => {
-                resolve(post)
-            }).catch((err) => {
-                reject(err)
-            })
+            if(post){
+                post.remove().then((post) => {
+                    resolve(post)
+                }).catch((err) => {
+                    reject({ 
+                        status: 500, 
+                        success: false,
+                        message:'Internal server error' 
+                    })
+                })
+            } else {
+                reject({ 
+                    status: 404, 
+                    success: true,
+                    message:'No post id' 
+                })
+            }
         }).catch((err) => {
-            reject(err)
+            reject({ 
+                status: 500, 
+                success: false,
+                message:'Internal server error' 
+            })
         })
     })
 }
