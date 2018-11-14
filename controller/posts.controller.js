@@ -11,7 +11,7 @@ const postsService = require('../services/posts.service')
 exports.getAllPosts = async (req, res, next) => {
     try {
         const posts = await postsService.getAllPosts(req, res, next)
-        if (posts.length >= 1) {
+        if (posts.length > 0) {
             return res.status(200).json({
                 success: true,
                 message: 'Get all posts success',
@@ -35,7 +35,7 @@ exports.getAllPosts = async (req, res, next) => {
 exports.getPostsByName = async (req, res, next) => {
     try {
         const posts = await postsService.getPostByName(req, res, next)
-        if (posts.length >= 1) {
+        if (posts.length > 0) {
             return res.status(200).json({
                 success: true,
                 message: 'Get posts by name success',
