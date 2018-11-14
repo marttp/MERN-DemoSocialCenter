@@ -1,9 +1,23 @@
 const express = require('express')
 const app = express()
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose')
+const config = require('./configs/config.js')
 
+mongoose.connect(config.mongoPath, {
+  useNewUrlParser: true
+})
 
-// Basic configuration server
+// ! Basic configuration server
 const port = process.env.PORT || 5000
+
+const db = mongoose.connection
+db.on('error', console.error.bind(console, 'connection error:'))
+db.once('open', function () {
+  // we're connected!
+  console.log('Connecting MongoAtlas Cloud')
+});
+
 
 // app.get('/', (req, res) => {
 //     res.send({
@@ -12,9 +26,16 @@ const port = process.env.PORT || 5000
 //     })
 // })
 
+// ! Use for received input and parse to JSON
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+app.use(bodyParser.json());
+
 app.use('/social-center', require('./routes/api.router'))
 
-// Start Server on Port
+
+// ! Start Server on Port
 app.listen(port, () => {
-    console.log('Start Server at port:',port)
+  console.log('Start Server at port:', port)
 })
