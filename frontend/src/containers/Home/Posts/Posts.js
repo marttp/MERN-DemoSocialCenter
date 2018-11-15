@@ -9,7 +9,7 @@ const Posts = props => {
   if (props.data !== null) {
     posts = props.data
     postsShowed = posts.map(post => (
-      <Post key={post.id} title={post.title} body={post.body} />
+      <Post key={post._id} name={post.name} text={post.text} />
     ))
   }
 

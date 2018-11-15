@@ -16,7 +16,7 @@ class MyPosts extends Component {
     if (data.length > 0) {
       myPosts = data.map(post => (
         <MyPost
-          key={post.id}
+          key={post._id}
           data={post}
           onDeletePost={this.handlerOnDeletePost}
         />

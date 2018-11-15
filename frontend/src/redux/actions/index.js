@@ -3,5 +3,6 @@ export {
   deletePost,
   insertName,
   fetchHomePost,
+  fetchPostName,
   toggleChangeName,
 } from './posts'

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import uuidv1 from 'uuid/v1'
 
 import {
   Button,
@@ -64,15 +63,14 @@ class NewPost extends Component {
     }
     this.props.onInsertName(this.state.name)
     this.props.toggleChangeName()
+    this.props.onFetchPostByName(this.state.name)
   }
 
   handlerOnPost = event => {
     event.preventDefault()
     const newPost = {
-      id: uuidv1(),
       name: this.props.name,
-      body: this.state.postText,
-      timeStamp: new Date(),
+      text: this.state.postText,
     }
     this.props.onAddPost(newPost)
     this.setState({ postText: '' })
@@ -148,6 +146,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onFetchPostByName: name => {
+      dispatch(actionCreator.fetchPostName(name))
+    },
     onAddPost: newPost => {
       dispatch(actionCreator.addPost(newPost))
     },

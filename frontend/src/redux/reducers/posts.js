@@ -13,14 +13,17 @@ const reducer = (state = initialState, action) => {
     case actionTypes.ADD_POST:
       return {
         ...state,
-        myPosts: [...state.myPosts, action.data],
+        homePost: [action.data, ...state.homePost],
+        myPosts: [action.data, ...state.myPosts],
       }
 
     case actionTypes.DELETE_POST:
-      const newPosts = state.myPosts.filter(post => post.id !== action.id)
+      const newHomePost = state.homePost.filter(post => post._id !== action.id)
+      const newPosts = state.myPosts.filter(post => post._id !== action.id)
       return {
         ...state,
         myPosts: newPosts,
+        homePost: newHomePost,
       }
 
     case actionTypes.INSERT_NAME:
@@ -41,8 +44,11 @@ const reducer = (state = initialState, action) => {
         homePost: action.fetchPosts,
       }
 
-    // case actionTypes.FETCH_MY_POST:
-    //   return
+    case actionTypes.FETCH_POST_BY_NAME:
+      return {
+        ...state,
+        myPosts: action.fetchPosts,
+      }
 
     case actionTypes.ON_START_PROCESS:
       return {

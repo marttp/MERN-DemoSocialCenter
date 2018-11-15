@@ -10,10 +10,10 @@ const MyPost = props => {
           {props.data.name}
           <Button
             close
-            onClick={event => props.onDeletePost(event, props.data.id)}
+            onClick={event => props.onDeletePost(event, props.data._id)}
           />
         </CardTitle>
-        <CardText className="text-post-center">{props.data.body}</CardText>
+        <CardText className="text-post-center">{props.data.text}</CardText>
       </Card>
     </React.Fragment>
   )

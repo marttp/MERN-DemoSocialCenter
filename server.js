@@ -4,6 +4,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose')
 const config = require('./configs/config.js')
 
+// ! Implement CORS
+const cors = require('cors')
+
 mongoose.connect(config.mongoPath, {
   useNewUrlParser: true
 })
@@ -18,13 +21,7 @@ db.once('open', function () {
   console.log('Connecting MongoAtlas Cloud')
 });
 
-
-// app.get('/', (req, res) => {
-//     res.send({
-//         test: '12',
-//         hello: 'asdsad'
-//     })
-// })
+app.use(cors())
 
 // ! Use for received input and parse to JSON
 app.use(bodyParser.urlencoded({
