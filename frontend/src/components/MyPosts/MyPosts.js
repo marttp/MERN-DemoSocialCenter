@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import MyPost from './MyPost/MyPost'
+import { Loader } from '..'
 
 import { connect } from 'react-redux'
 import * as actionCreator from '../../redux/actions'
@@ -13,6 +14,7 @@ class MyPosts extends Component {
   render() {
     const data = [...this.props.myPosts]
     let myPosts = null
+
     if (data.length > 0) {
       myPosts = data.map(post => (
         <MyPost
@@ -23,6 +25,10 @@ class MyPosts extends Component {
       ))
     }
 
+    if (this.props.isLoading) {
+      myPosts = <Loader />
+    }
+
     return <React.Fragment>{myPosts}</React.Fragment>
   }
 }
@@ -30,6 +36,7 @@ class MyPosts extends Component {
 const mapStateToProps = state => {
   return {
     myPosts: state.posts.myPosts,
+    isLoading: state.posts.isLoading,
   }
 }
 
